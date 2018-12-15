@@ -4,9 +4,9 @@
 
 // mykey - 0GiNgLMmlcfv3hmO5YRw46b4t2amN1iA
 // Global variables
-// strMyKey = 0GiNgLMmlcfv3hmO5YRw46b4t2amN1iA;
 
-var leaders = ["Barak Obama", "Mahatma Gandhi", "Narendra Modi", "George W. Bush", "George Washington", "Ronald Regan"];
+var leaders = ["Barrak Obama", "Mahatma Gandhi", "Narendra Modi", "George W. Bush", "George Washington", "Ronald Regan"];
+var results = [];
 
 // Object triviaGame
 var giftastics = {  
@@ -14,25 +14,16 @@ var giftastics = {
   startGame: function() {
 
     $("#leaderButtons").empty();
-    //$("#textLeader"
-
+    $("#textLeader").val('');
+    
     for (var i = 0; i < leaders.length; i++) {
 
-      // Inside the loop...
-
-      // 2. Create a variable named "letterBtn" equal to $("<button>");
       var leaderBtn = $("<button>");
 
-      // 3. Then give each "letterBtn" the following classes: "letter-button" "letter" "letter-button-color".
       leaderBtn.addClass("leader btn btn-default");
-
-      // 4. Then give each "letterBtn" a data-attribute called "data-letter".
       leaderBtn.attr("world-leader", leaders[i]);
-
-      // 5. Then give each "letterBtns" a text equal to "letters[i]".
       leaderBtn.text(leaders[i]);
-
-      // 6. Finally, append each "letterBtn" to the "#buttons" div (provided).
+      
       $("#leaderButtons").append(leaderBtn);
 
     }
@@ -73,7 +64,8 @@ function displayLeaderInfo()
     .then(function(response) {
       
       // storing the data from the AJAX request in the results variable
-      var results = response.data;
+      results =  [];
+      results = response.data;
 
       // Looping through each result item
       for (var i = 0; i < results.length; i++) 
@@ -91,6 +83,8 @@ function displayLeaderInfo()
         leaderImage.attr("src", results[i].images.fixed_height_still.url);
         leaderImage.attr("width", "150px");
         leaderImage.attr("height", "150px");
+        leaderImage.attr("data-state", "still");
+        leaderImage.attr("index", i);
         leaderImage.addClass("leaderimage");
 
         leaderDiv.append(leaderImage);
@@ -103,23 +97,22 @@ function displayLeaderInfo()
   });
 };
 
-function animateLeader()
+$(document).on("click", ".leaderimage", function() 
 {
-    console.log(this);
-  
     var state = $(this).attr("data-state");
-    console.log(state);
+    var index = $(this).attr("index");
+   
     if (state === "still") {
-        $(this).attr("src", $(this).attr("data-animate"));
+        $(this).attr("src", results[index].images.fixed_height.url);
         $(this).attr("data-state", "animate");
     } else {
-        $(this).attr("src", $(this).attr("data-still"));
+        $(this).attr("src", results[index].images.fixed_height_still.url);
         $(this).attr("data-state", "still");
     }
-};
+    giftastics.startGame();
+});
 
 $(document).on("click", ".leader", displayLeaderInfo);
-$(document).on("click", ".leaderimage", animateLeader);
 
 // Start program here...
 giftastics.startGame();
